@@ -1,0 +1,9 @@
+<h1>Gift List</h1>
+<a href="/gifts/add">Add New Gift</a>
+<ul>
+  <% gifts.forEach(gift => { %>
+    <li>
+      <a href="/gifts/<%= gift._id %>"><%= gift.name %> - $<%= gift.price %></a>
+    </li>
+  <% }) %>
+</ul>

@@ -1,0 +1,41 @@
+<%- include('../components/header', { title: 'The Secret Angel Game' , user }) %>
+    <div class="lobby-container">
+        <h1 class="lobby-title">Lobby</h1>
+
+        <div class="create-game-container">
+            <div class="create-game-btn">Create A Game</div>
+        </div>
+    </div>
+
+    <%- include('../components/footer') %>
+        <style>
+            .lobby-container {
+                background-color: #263745;
+                padding: 50px;
+                color: white;
+                text-align: center;
+                height: 100%;
+            }
+
+            .lobby-title {
+                font-size: 36px;
+                margin-bottom: 30px;
+            }
+
+            .create-game-container {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                margin-top: 30px;
+            }
+
+            .create-game-btn {
+                background-color: #559A6A;
+                padding: 15px 30px;
+                color: white;
+                text-decoration: none;
+                font-size: 18px;
+                border-radius: 5px;
+                width: 200px;
+            }
+        </style>

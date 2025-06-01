@@ -1,0 +1,104 @@
+<div class="form-container">
+  <h1>Edit Gift</h1>
+  <form method="POST" action="/gifts/<%= gift._id %>/edit" id="giftForm" enctype="multipart/form-data">
+
+    <!-- Seller Info - keep hidden as in add -->
+    <input type="hidden" name="sellerName" value="<%= user ? user.name : '' %>" />
+    <input type="hidden" name="sellerEmail" value="<%= user ? user.email : '' %>" />
+    <input type="hidden" name="sellerID" value="<%= user ? user.id : '' %>" />
+    <input type="hidden" name="rating" value="<%= gift.rating || 0 %>" />
+
+    <input name="name" placeholder="Gift Name" required value="<%= gift.name %>" />
+
+    <textarea name="description" placeholder="Description (optional)"><%= gift.description %></textarea>
+
+    <input name="price" type="number" step="0.01" placeholder="Price in $" required value="<%= gift.price %>" />
+
+    <input name="availability" type="number" step="1" placeholder="Stock in inventory" required value="<%= gift.availability %>" />
+
+    <select name="category" id="categorySelect" required>
+      <option value="">-- Select Category --</option>
+      <option value="Toys" <%= gift.category === 'Toys' ? 'selected' : '' %>>Toys</option>
+      <option value="Books" <%= gift.category === 'Books' ? 'selected' : '' %>>Books</option>
+      <option value="Fashion" <%= gift.category === 'Fashion' ? 'selected' : '' %>>Fashion</option>
+      <option value="Gadgets" <%= gift.category === 'Gadgets' ? 'selected' : '' %>>Gadgets</option>
+      <option value="Home Decor" <%= gift.category === 'Home Decor' ? 'selected' : '' %>>Home Decor</option>
+    </select>
+
+    <input name="imageUrl" id="imageUrl" placeholder="Image URL (optional)" value="<%= gift.image || '' %>" />
+    <input type="file" name="image" id="giftFile" accept="image/*" />
+    <input type="hidden" name="imageBase64" id="imageBase64" />
+
+    <button type="submit">✏️ Update Gift</button>
+  </form>
+</div>
+
+<script>
+  const form = document.getElementById('giftForm');
+ const categorySelect = document.getElementById('categorySelect');
+  const imageUrlInput = document.getElementById('imageUrl');
+ const imageUrlFile = document.getElementById('giftFile');
+const imageBase64Field = document.getElementById('imageBase64');
+const reader = new FileReader();
+
+  imageUrlFile.addEventListener('change', () => {
+    const file = imageUrlFile.files[0];
+    if (file) {
+      
+      reader.onload = () => {
+        imageBase64Field.value = reader.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+ form.addEventListener('submit', function (e) {
+  e.preventDefault(); // Stop the form from submitting immediately
+
+  const category = categorySelect.value;
+  const imageUrl = imageUrlInput.value.trim();
+  const file = imageUrlFile.files[0];
+
+  // When there's a file, convert to base64 and wait for reader
+  if (!imageUrl && file) {
+    reader.onload = () => {
+      imageBase64Field.value = reader.result;
+      form.submit(); // Submit only after reader finishes
+    };
+    reader.readAsDataURL(file);
+  } else {
+    // If imageUrl is present or no file uploaded
+    if (!imageUrl && category) {
+      imageUrlInput.value = `https://placehold.co/300x200?text=${encodeURIComponent(category)}&font=roboto`;
+    }
+    form.submit();
+  }
+});
+
+</script>
+<style>
+  .form-container {
+    max-width: 600px;
+    margin: 60px auto;
+    padding: 40px 50px;
+    background: linear-gradient(135deg, #f0f4f8, #d9e2ec);
+    border-radius: 20px;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .form-container h1 {
+    text-align: center;
+    margin-bottom: 35px;
+    color: #34495e;
+    font-weight: 800;
+    font-size: 32px;
+    letter-spacing: 1px;
+  }
+
+  .form-container input,
+  .form-container textarea,
+  .form-container select {
+    width: 100%;
+  }
+</style>

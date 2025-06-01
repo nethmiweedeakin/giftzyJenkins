@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My Cart</title>
+  <link rel="stylesheet" href="/styles/main.css">
+</head>
+<body>
+  <%- include('../components/header', { title: 'My Cart', user }) %>
+
+  <div class="page-container">
+    <main class="gift-detail-container">
+      <h1>Your Cart</h1>
+       <p>Navigate to gift and chat with seller for purchase</p>
+
+      <% if (cart && cart.length > 0) { %>
+        <form action="/gifts/cart/clear" method="POST">
+          <button type="submit" class="btn danger">Clear Cart</button>
+        </form>
+        <ul>
+          <% cart.forEach(item => { %>
+            <li>
+              <strong><a href="/gifts/<%= item.id %>"><%= item.name %></a></strong> - Quantity: <%= item.quantity %>
+              <form action="/gifts/cart/remove/<%= item.id %>" method="POST" style="display:inline;">
+                <button type="submit" class="btn danger small">Remove</button>
+              </form>
+            </li>
+          <% }) %>
+        </ul>
+      <% } else { %>
+        <p>Your cart is empty.</p>
+      <% } %>
+
+      <a href="/gifts" class="back-link">← Continue Shopping</a>
+      
+      <% if (!user) { %>
+         <p>Your account is a guest account. Consider registering for more benefits.</p>
+          <% } %>
+    </main>
+  </div>
+</body>
+</html>
+<style>
+.btn {
+  padding: 6px 10px;
+  margin-left: 10px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.btn.danger {
+  background-color: #f44336;
+}
+
+.btn.small {
+  font-size: 0.8rem;
+  padding: 4px 8px;
+}
+</style>

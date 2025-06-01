@@ -1,0 +1,49 @@
+{
+  "name": "webprojectsit725_giftzy",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "cucumber-js --format json:./reports/cucumber_report.json",
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cynthiawjy135/WebProjectSIT725.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cynthiawjy135/WebProjectSIT725/issues"
+  },
+  "homepage": "https://github.com/cynthiawjy135/WebProjectSIT725#readme",
+  "devDependencies": {
+    "@cucumber/cucumber": "^11.3.0",
+    "chromedriver": "^137.0.0",
+    "cucumber-html-reporter": "^7.2.0",
+    "cucumber": "^6.0.7",
+    "nodemon": "^3.1.9",
+    "prettier": "^3.5.3",
+    "selenium-webdriver": "^4.33.0"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "connect-flash": "^0.1.1",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "ejs": "^3.1.10",
+    "express": "^5.1.0",
+    "express-session": "^1.18.1",
+    "faker": "^5.5.3",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.14.2",
+    "multer": "^1.4.5-lts.2",
+    "nodemailer": "^6.10.1",
+    "passport": "^0.7.0",
+    "passport-google-oauth20": "^2.0.0",
+    "passport-jwt": "^4.0.1",
+    "socket.io": "^4.8.1"
+  }
+}

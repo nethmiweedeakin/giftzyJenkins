@@ -1,0 +1,130 @@
+<style>
+  .form-container {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 35px;
+    background: linear-gradient(to right, #f9f9f9, #f5ebe2);
+    border-radius: 16px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  .form-container h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #2c3e50;
+    font-weight: 700;
+    font-size: 28px;
+  }
+
+  .form-container input,
+  .form-container textarea,
+  .form-container select,
+  .form-container button {
+    width: 100%;
+    padding: 14px;
+    margin-bottom: 20px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-sizing: border-box;
+  }
+
+  .form-container textarea {
+    resize: vertical;
+    min-height: 100px;
+  }
+
+  .form-container select {
+    background-color: #f6e3d6;
+  }
+
+  .form-container button {
+    background-color: #d0881b;
+    color: white;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+
+  .form-container button:hover {
+    background-color: #a74b24;
+  }
+</style>
+
+<div class="form-container">
+  <!-- Display User Information -->
+  <div>
+    <h3>User Info:</h3>
+    <p><strong>Name:</strong> <%= user ? user.name : 'No user logged in' %></p>
+    <p><strong>Email:</strong> <%= user ? user.email : 'No email available' %></p>
+    <p><strong>ID:</strong> <%= user ? user.id : 'No ID available' %></p>
+  </div>
+
+
+
+
+  <h1>Add New Gift</h1>
+  <form method="POST" action="/gifts/add" id="giftForm">
+
+      <!-- Hidden Inputs for Seller Info (Injected by EJS) -->
+    <input type="hidden" name="sellerName" id="sellerName" value="<%= user ? user.name : '' %>" />
+    <input type="hidden" name="sellerEmail" id="sellerEmail" value="<%= user ? user.email : '' %>" />
+    <input type="hidden" name="sellerID" id="sellerID" value="<%= user ? user.id : '' %>" />
+      <input type="hidden" name="rating" id="rating" value="0" />
+
+    <input name="name" placeholder="Gift Name" required />
+
+    <textarea name="description" placeholder="Description (optional)"></textarea>
+
+    <input name="price" type="number" step="0.01" placeholder="Price in $" required />
+
+    <input name="availability" type="number" step="1" placeholder="Stock in inventory" required />
+
+    <select name="category" id="categorySelect" required>
+      <option value="">-- Select Category --</option>
+      <option value="Toys">Toys</option>
+      <option value="Books">Books</option>
+      <option value="Fashion">Fashion</option>
+      <option value="Gadgets">Gadgets</option>
+      <option value="Home Decor">Home Decor</option>
+    </select>
+
+    <input name="imageUrl" id="imageUrl" placeholder="Image URL (optional)" />
+  <input type="file" name="image" id="giftFile" accept="image/*">
+  <input type="hidden" name="imageBase64" id="imageBase64">
+    <button type="submit">🎁 Add Gift</button>
+  </form>
+</div>
+
+<script>
+  const form = document.getElementById('giftForm');
+  const categorySelect = document.getElementById('categorySelect');
+  const imageUrlInput = document.getElementById('imageUrl');
+ const imageUrlFile = document.getElementById('giftFile');
+const imageBase64Field = document.getElementById('imageBase64');
+const reader = new FileReader();
+
+  imageUrlFile.addEventListener('change', () => {
+    const file = imageUrlFile.files[0];
+    
+    if (file) {
+      reader.onload = () => {
+        imageBase64Field.value = reader.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  form.addEventListener('submit', function (e) {
+    const category = categorySelect.value;
+    const imageUrl = imageUrlInput.value.trim();
+
+    // Set default placeholder image if not provided
+    if (!imageUrl && !(imageUrlFile.files[0]) && category) {
+      imageUrlInput.value = `https://placehold.co/300x200?text=${encodeURIComponent(category)}&font=roboto`;
+    }else if(!imageUrl && imageUrlFile) {
+      imageUrlInput.value = reader.result;  } 
+  });
+</script>

@@ -1,0 +1,154 @@
+[
+  {
+    "description": "",
+    "elements": [
+      {
+        "description": "",
+        "id": "giftzy-end-to-end-user-journey;add,-view,-update,-and-delete-a-gift",
+        "keyword": "Scenario",
+        "line": 3,
+        "name": "Add, view, update, and delete a gift",
+        "steps": [
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 4,
+            "name": "I am logged into Giftzy",
+            "match": {
+              "location": "features\\step_definitions\\giftzy.steps.js:12"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 2470193299
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 5,
+            "name": "I add a new gift",
+            "match": {
+              "location": "features\\step_definitions\\giftzy.steps.js:39"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 402773700
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 6,
+            "name": "I view the newly added gift",
+            "match": {
+              "location": "features\\step_definitions\\giftzy.steps.js:55"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 206425900
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 7,
+            "name": "I add the gift to cart",
+            "match": {
+              "location": "features\\step_definitions\\giftzy.steps.js:61"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 122723899
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 8,
+            "name": "I navigate back to the gift from cart",
+            "match": {
+              "location": "features\\step_definitions\\giftzy.steps.js:67"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 132732100
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 9,
+            "name": "I edit the gift",
+            "match": {
+              "location": "features\\step_definitions\\giftzy.steps.js:79"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 383307700
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 10,
+            "name": "I send a chat message",
+            "match": {
+              "location": "features\\step_definitions\\giftzy.steps.js:105"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 660807899
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 11,
+            "name": "I verify the payment",
+            "match": {
+              "location": "features\\step_definitions\\giftzy.steps.js:125"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 2088498099
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 12,
+            "name": "I delete the gift",
+            "match": {
+              "location": "features\\step_definitions\\giftzy.steps.js:131"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 441657799
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 13,
+            "name": "I should see the gift was deleted",
+            "match": {
+              "location": "features\\step_definitions\\giftzy.steps.js:148"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 148466500
+            }
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      }
+    ],
+    "id": "giftzy-end-to-end-user-journey",
+    "line": 1,
+    "keyword": "Feature",
+    "name": "Giftzy end-to-end user journey",
+    "tags": [],
+    "uri": "features\\giftzy.feature"
+  }
+]

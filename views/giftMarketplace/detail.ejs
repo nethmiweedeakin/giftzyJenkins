@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title><%= gift.name %></title>
+  <link rel="stylesheet" href="/styles/main.css">
+</head>
+<body>
+  <%- include('../components/header', { title: gift.name, user }) %>
+
+  <div class="page-container">
+    <main class="gift-detail-container">
+      <h1 class="gift-name"><%= gift.name %></h1>
+
+      <% if (gift.imageUrl) { %>
+        <img src="<%= gift.imageUrl %>" alt="<%= gift.name %>" class="gift-image">
+      <% } else { %>
+        <img src="/images/default.jpg" alt="Not available" class="gift-image">
+      <% } %>
+
+      <div class="gift-info">
+        <p class="gift-description"><%= gift.description %></p>
+        <p class="gift-price"><strong>Price:</strong> $<%= gift.price.toFixed(2) %></p>
+
+        <p class="gift-availability">
+          <strong>Availability:</strong>
+          <% if (Number(gift.availability) > 0) { %>
+            <span class="available"><%= gift.availability %> in stock</span>
+          <% } else { %>
+            <span class="unavailable">Out of Stock</span>
+          <% } %>
+        </p>
+
+        <p class="gift-seller"><strong>Seller:</strong> <%= gift.sellerName || "Unknown" %></p>
+        <!-- Show Rating as Empty Stars -->
+
+        <p class="gift-rating">
+            <strong>Rating:</strong>
+            <% let totalReview = gift.rating; %> <!-- Start with the initial rating -->
+            <% let reviewCount = gift.reviews.length; %> <!-- Number of reviews -->
+
+            <% gift.reviews.forEach(review => { %>
+                <% totalReview += review.rating; %> <!-- Accumulate the total rating -->
+            <% }); %>
+
+            <% 
+                // Calculate the average rating
+               let averageRating = reviewCount > 0 ? totalReview / reviewCount : 0;
+               // Ensure averageRating is a not divided by zero
+            %>  
+          <p class="gift-rating">
+    <strong>Rating:</strong>
+    <% for (let i = 0; i < 5; i++) { %>
+        <% if (i < Math.floor(averageRating.toFixed(1))) { %>
+        &#9733;
+        <% } else { %>
+        &#9734;
+        <% } %>
+    <% } %>
+    (<%= averageRating.toFixed(1) %>)
+</p>
+
+        <!-- Quantity Selector -->
+            <div class="quantity-selector">
+            <button type="button" id="decrement">−</button>
+            <input type="number" id="quantity" name="quantity" value="1" min="1" readonly>
+            <button type="button" id="increment">+</button>
+            </div>
+        <div class="gift-actions">   
+      <!-- Chat Form -->  
+         <form action="/gifts/chat/<%= gift._id %>" method="POST" id="chatForm">
+  <input type="hidden" name="quantity" id="chatQuantity" value="1">
+  <button type="submit" class="chat-seller-btn" <% if (gift.availability <= 0) { %> disabled <% } %>> 
+    Chat with Seller
+  </button>
+</form>
+
+
+  <!-- Show Edit if user is seller -->
+<% if (user && user.id && user.buyer && (gift.sellerID === user.id) ) { %>
+  <a href="/gifts/<%= gift._id %>/edit" class="add-to-cart-btn">Edit Gift</a>
+<% } %>
+
+  <!-- Add to Cart Form for others -->
+  <form action="/gifts/cart/add/<%= gift._id %>" method="POST" id="cartForm">
+    <input type="hidden" name="quantity" id="formQuantity" value="1">
+    <button type="submit" class="add-to-cart-btn" <% if (gift.availability <= 0) { %> disabled <% } %>>
+      Add to Cart
+    </button>
+  </form>
+
+
+
+        </div>
+
+        <a href="/gifts" class="back-link">← Back to list</a>
+      </div>
+      
+    </main>
+
+    <!-- Reviews Section -->
+<main class="review-detail-container">
+ <% if (user) { %>
+<h2>Add a review</h2>
+<ul class="reviews-list">
+</ul>
+<!-- Add/Edit Review Form -->
+<% let userReview = null; %>
+<% if (user && user.id) { %>
+  <% userReview = gift.reviews.find((rev) => rev.userId.toString() === user.id.toString()); %>
+<% } %>
+
+
+<form action="/gifts/<%= gift._id %>/review" method="POST" class="review-form">
+  <label for="rating" style="display: inline-block; margin-right: 10px;">Your Rating:</label>
+<select 
+  name="rating" 
+  id="rating" 
+  style="width: 100px; padding: 5px; font-size: 14px; margin-bottom: 10px; display: inline-block;" 
+  <%= userReview ? 'disabled' : '' %>>
+  
+  <% for (let i = 1; i <= 5; i++) { %>
+    <option value="<%= i %>" <%= userReview && userReview.rating === i ? 'selected' : '' %>>
+      <%= i %>
+    </option>
+  <% } %>
+</select>
+
+
+  <label for="comment">Comment:</label>
+  <textarea name="comment" id="comment" rows="3" <%= userReview ? 'readonly' : '' %>><%= userReview ? userReview.comment : '' %></textarea>
+
+  <% if (!userReview) { %>
+    <button type="submit">Submit Review</button>
+  <% } else { %>
+    <a href="/gifts/<%= gift._id %>/review/edit" class="edit-review-btn">Edit Your Review</a>
+  <% } %>
+</form>
+<% } %>
+<section class="review-section">
+  <h2>Reviews</h2>
+<% if (gift.reviews && gift.reviews.length > 0) { %>
+  <% gift.reviews.forEach(review => { %>
+    <div class="review-card">
+      <div class="review-rating">
+        <% 
+         for (let i = 0; i < 5; i++) { %>
+          <% if (i < review.rating) { %>
+            &#9733; <!-- filled star -->
+          <% } else { %>
+            &#9734; <!-- empty star -->
+          <% } %>
+        <% } %>
+      </div>
+       <strong><%= review.userId.name || 'Anonymous' %>:</strong> <%= review.rating %>/5
+      <div class="review-comment">
+        <p><%= review.comment %></p>
+      </div>
+    </div> <!-- CLOSE .review-card properly -->
+  <% }) %>
+<% } else { %>
+  <p class="no-reviews">No reviews yet. Be the first to review this gift!</p>
+<% } %>
+</section>
+</main>
+  </div>
+
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
+
+    .page-container {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    main {
+      flex: 1;
+    }
+
+    .gift-detail-container {
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 20px;
+      background-color: #3C4A59;
+      border-radius: 10px;
+      color: white;
+      text-align: center;
+    }
+
+    .gift-description {
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+
+    .gift-price {
+      font-size: 20px;
+      color: #FFD700;
+      margin-bottom: 10px;
+    }
+
+    .gift-availability .available {
+      color: #90ee90;
+    }
+
+    .gift-availability .unavailable {
+      color: #ff7f7f;
+    }
+
+    .gift-seller {
+      margin-bottom: 15px;
+      font-style: italic;
+    }
+
+    .gift-actions {
+      margin-top: 20px;
+    }
+
+    .add-to-cart-btn,
+    .chat-seller-btn {
+      background-color: #559A6A;
+      padding: 10px 20px;
+      color: white;
+      text-decoration: none;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      margin: 5px;
+      cursor: pointer;
+    }
+
+    .chat-seller-btn:disabled,
+    .add-to-cart-btn:disabled {
+      background-color: #777;
+      cursor: not-allowed;
+    }
+
+    .back-link {
+      display: block;
+      margin-top: 20px;
+      color: #ccc;
+      text-decoration: none;
+    }
+
+    footer {
+      background-color: #333;
+      color: white;
+      text-align: center;
+      padding: 10px;
+    }
+
+    .gift-rating {
+  font-size: 24px;
+  color: gold;
+  letter-spacing: 2px;
+}
+
+.quantity-selector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 15px 0;
+}
+
+.quantity-selector button {
+  padding: 5px 10px;
+  font-size: 20px;
+  background-color: #559A6A;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.quantity-selector input {
+  width: 50px;
+  text-align: center;
+  margin: 0 10px;
+  font-size: 18px;
+}
+
+
+   .review-detail-container {
+  max-width: 700px;
+  margin: 40px auto;
+  padding: 24px;
+  background-color: #2E3847;
+  border-radius: 12px;
+  color: #F5F5F5;
+  text-align: left;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+  border: 1px solid #444;
+}
+
+.review-card {
+  background-color: #3C4A59;
+  padding: 16px 20px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  border-left: 4px solid #FFD700;
+}
+
+    .gift-name {
+      font-size: 32px;
+      margin-bottom: 20px;
+    }
+
+    .gift-image {
+      width: 100%;
+      height: 300px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+
+.reviews-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 20px;
+  text-align: left;
+}
+
+.review-form {
+  margin-top: 20px;
+  text-align: left;
+}
+
+.review-form textarea,
+.review-form select {
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 8px;
+  font-size: 16px;
+}
+
+.edit-review-btn {
+  background-color: #FFA500;
+  padding: 8px 16px;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+}
+  </style>
+</body>
+<script>
+const availability = "<%= gift.availability %>";
+ // Injecting from server to client
+  const form = document.getElementById('cartForm');
+  const quantityInput = document.getElementById('quantity');
+  const formQuantity = document.getElementById('formQuantity');
+  
+  const chatForm = document.getElementById('chatForm');
+  const chatQuantity = document.getElementById('chatQuantity');
+
+ form.addEventListener('submit', () => {
+    formQuantity.value = quantityInput.value;
+  });
+
+  chatForm.addEventListener('submit', () => {
+    chatQuantity.value = quantityInput.value;
+  });
+
+  //Increment and Decrement functionality
+  document.getElementById('increment').addEventListener('click', () => {
+    const input = document.getElementById('quantity');
+    if(parseInt(input.value) < parseInt(availability)) {
+    input.value = parseInt(input.value) + 1;
+     document.getElementById('quantityInput').value = input.value;
+    }
+   
+  });
+
+  document.getElementById('decrement').addEventListener('click', () => {
+    const input = document.getElementById('quantity');
+    if (parseInt(input.value) > 1) {
+      input.value = parseInt(input.value) - 1;
+      document.getElementById('quantityInput').value = input.value;
+    }
+  });
+
+  // Check if the URL has chatStarted=true
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('chatStarted') === 'true') {
+    const alertBox = document.createElement('div');
+    alertBox.innerHTML = `
+      <div style="padding: 15px; background-color: #e0ffe0; border: 1px solid #0c0; border-radius: 5px; margin-top: 15px;">
+        🎉 Purchased successfully!
+        <a href="/gifts/cart" style="color: blue; text-decoration: underline; margin-left: 10px;">Go to Cart</a>
+      </div>
+    `;
+    document.body.prepend(alertBox);
+  }
+
+</script>
+
+</html>

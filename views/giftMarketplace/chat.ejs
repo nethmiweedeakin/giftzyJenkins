@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en" xml:lang="en">
+<head>
+  <title>Chat about <%= gift.title %></title>
+  <script src="/socket.io/socket.io.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f8f8f8;
+      padding: 20px;
+    }
+    h2 {
+      color: #333;
+    }
+    #messages {
+      list-style: none;
+      padding: 0;
+      max-height: 400px;
+      overflow-y: auto;
+      border: 1px solid #ccc;
+      background: white;
+      border-radius: 5px;
+      margin-bottom: 10px;
+    }
+    #messages li {
+      padding: 10px;
+      margin: 5px;
+      border-radius: 5px;
+      max-width: 70%;
+      word-wrap: break-word;
+    }
+    .you {
+      background-color: #d1e7dd;
+      align-self: flex-end;
+      margin-left: auto;
+    }
+    .other {
+      background-color: #f8d7da;
+      align-self: flex-start;
+    }
+    .meta {
+      font-size: 0.8em;
+      color: #555;
+      margin-bottom: 5px;
+    }
+    #chatContainer {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    form {
+      display: flex;
+      gap: 5px;
+    }
+    input {
+      flex: 1;
+      padding: 10px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+    button {
+      padding: 10px 15px;
+      border: none;
+      background-color: #007bff;
+      color: white;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+   .seller {
+  background-color: #d1e7dd; /* greenish */
+  align-self: flex-start;
+}
+
+.buyer {
+  background-color: #f8d7da; /* reddish */
+  align-self: flex-start;
+}
+.you {
+  background-color: #d7d9f8; /* blue */
+ align-self: flex-end;
+  text-align: right;
+  margin-left: auto;
+  margin-right: 10px;
+}
+.guest-buyer{
+    background-color: #e7dfd1; /* orange */
+  align-self: flex-start;
+}
+.guest{
+    background-color: #e7dfd1; /* orange */
+  align-self: flex-start;
+}
+
+.success {
+  background-color: #d4edda;
+  color: #155724;
+}
+.error {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+#toast {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 9999;
+  padding: 15px 20px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  animation: slidein 0.3s ease;
+}
+
+@keyframes slidein {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+  </style>
+</head>
+<body>
+  <h2>Chat about "<%= gift.name %>" for <%= quantity %> quantity</h2>
+  <h3>with seller "<%= gift.sellerName %>"</h3>
+  <ul id="messages"></ul>
+
+  <form id="chatForm">
+    <input id="msg" placeholder="Type your message..." autocomplete="off" />
+    <input id="img" type="file" accept="image/*" />
+    <button>Send</button>
+  </form>
+  
+<div id="toast" class="error" style="display: none;"></div>
+
+
+<% if (user && user.id && user.buyer && (gift.sellerID === user.id) && (quantity > 0)) { %>
+  <form action="/gifts/chat/<%= gift._id %>/verified" method="POST" id="verifiedForm">
+    <input type="hidden" name="quantity" value="<%= quantity || 1 %>">
+    <button type="submit" class="verify-btn">Verified proof of purchase</button>
+  </form>
+<% } %>
+
+  <script>
+    const socket = io();
+    const giftId = "<%= gift._id %>";
+    const currentUserId = "<%= user.id %>";
+    const sessionId = "<%= user._id %>"; 
+    const messagesList = document.getElementById('messages');
+    const form = document.getElementById('chatForm');
+    const input = document.getElementById('msg');
+
+    // Join the room
+    socket.emit('joinRoom', { giftId });
+
+    // Load chat history
+   fetch(`/gifts/chat/${giftId}/history`)
+  .then(res => res.json())
+  .then(messages => {
+    messages.forEach(msg => {
+      let senderName = 'Guest';
+      let senderRole = 'Guest-Buyer';
+
+      if (msg.isGuest && msg.guestSessionId) {
+        const suffix = msg.guestSessionId.slice(-5);
+        senderName = `Guest-${suffix}`;
+      } else if (msg.sender && msg.sender.name) {
+        senderName = msg.sender.name;
+        senderRole = (msg.sender._id === '<%= gift.sellerID.toString() %>') ? 'Seller' : 'Buyer';
+      }
+
+      appendMessage({
+        senderName,
+        senderRole,
+        senderId: msg.sender?._id || msg.guestSessionId || null,
+        message: msg.message,
+        imageUrl: msg.imageUrl || null,
+        timestamp: msg.timestamp,
+      });
+    });
+
+    scrollToBottom();
+  });
+
+    // Handle new message form submit
+  form.addEventListener('submit', (e) => {
+  e.preventDefault();
+
+  const message = input.value.trim();
+  const imageInput = document.getElementById('img');
+  const imageFile = imageInput.files[0];
+
+  if (!message && !imageFile) {
+    showToast('Please enter a message or select an image to send.');
+    return;
+  }
+
+  if (imageFile) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const imageUrl = reader.result; // base64 data URL
+      socket.emit('chatMessage', { message, imageUrl, giftId });
+    };
+    reader.readAsDataURL(imageFile);
+  } else {
+    socket.emit('chatMessage', { message, giftId });
+  }
+
+  // Clear inputs
+  input.value = '';
+  imageInput.value = '';
+});
+
+
+    // Append incoming message
+    socket.on('message', (data) => {
+      appendMessage(data);
+      scrollToBottom();
+    });
+
+    // Function to add a message to the UI
+  function appendMessage({ senderName, senderRole, senderId, message, timestamp, imageUrl }) {
+  const li = document.createElement('li');
+  const time = new Date(timestamp).toLocaleTimeString();
+
+  if (senderId === currentUserId) {
+    li.classList.add('you');
+  } else {
+    li.classList.add(senderRole.toLowerCase()); // seller, buyer, guest
+  }
+
+  // Build message content
+  let contentHtml = `<div class="meta">${senderName} (${senderRole}) • ${time}</div>`;
+  if (message) {
+    contentHtml += `<div>${message}</div>`;
+  }
+  if (imageUrl) {
+    contentHtml += `<img src="${imageUrl}" style="max-width: 200px; margin-top: 5px; border-radius: 5px;" alt="sent image"/>`;
+  }
+
+  li.innerHTML = contentHtml;
+  messagesList.appendChild(li);
+}
+
+function scrollToBottom() {
+      messagesList.scrollTop = messagesList.scrollHeight;
+    }
+
+function showToast(message, duration = 3000) {
+  const toast = document.getElementById('toast');
+  toast.textContent = message;
+  toast.style.display = 'block';
+
+  setTimeout(() => {
+    toast.style.display = 'none';
+  }, duration);
+}
+
+  </script>
+</body>
+</html>
