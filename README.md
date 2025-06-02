@@ -1,15 +1,4 @@
-# 🎁 Giftzy - SIT725 Group Project
-
-Giftzy is a web application built using **Node.js** that provides smart solutions for **gift recommendation**, **event planning**, and **event marking**. It is designed to assist users in making thoughtful and timely decisions for various events and special occasions.
-
-## 💡 Project Features
-
-- 🎁 Intelligent Gift Recommendations
-- 📅 Event Planning Assistant
-- 🌍 Gift Ideas Community
-- ✅ Event Marking and Tracking System
-- 🔐 User Authentication and Role Management
-
+# 🎁 Giftzy 
 ## 🛠️ Tech Stack
 
 - **Backend**: Node.js, Express
