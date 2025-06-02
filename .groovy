@@ -26,6 +26,9 @@ pipeline {
         
         stage('Build') {
             steps {
+
+
+
                      // Kill any previously running Node.js processes
                   bat '''
 taskkill /F /IM node.exe 2>NUL || echo No node process found
@@ -35,7 +38,7 @@ exit /b 0
 powershell -NoProfile -Command "$env:MONGO_URI='%MONGO_URI%'; $env:JWT_SECRET='%JWT_SECRET%'; $env:SESSION_SECRET='%SESSION_SECRET%'; $env:GOOGLE_CLIENT_ID='%GOOGLE_CLIENT_ID%'; $env:GOOGLE_CLIENT_SECRET='%GOOGLE_CLIENT_SECRET%'; Start-Process npm.cmd -ArgumentList 'run dev' -NoNewWindow; Start-Sleep -Seconds 10"
 '''
 
-
+bat 'npm install' 
 
         archiveArtifacts artifacts: '**/build/**', allowEmptyArchive: true
             }
