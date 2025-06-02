@@ -104,7 +104,7 @@ Users can log in as **guest**, **seller**, or **buyer** and exchange gifts in th
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/cynthiawjy135/WebProjectSIT725.git
+   git clone https://github.com/nethmiweedeakin/giftzyJenkins.git
    cd giftzy
    ```
 
