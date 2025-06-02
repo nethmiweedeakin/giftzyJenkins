@@ -1,13 +1,21 @@
 const { Given, When, Then, AfterAll } = require('@cucumber/cucumber');
-const { Builder, By, Capabilities, Key, until} = require('selenium-webdriver');
-
+const { Builder, By, Capabilities, Key, until } = require('selenium-webdriver');
 require("chromedriver");
 const chrome = require('selenium-webdriver/chrome');
-// driver setup
-const capabilities = Capabilities.chrome();
-capabilities.set('chromeOptions', { "w3c": false });
-const driver = new Builder().withCapabilities(capabilities).build();
 
+// Chrome options for headless mode
+const chromeOptions = new chrome.Options();
+chromeOptions.addArguments('--headless=new');
+chromeOptions.addArguments('--disable-gpu');
+chromeOptions.addArguments('--no-sandbox');
+chromeOptions.addArguments('--window-size=1920,1080');
+chromeOptions.addArguments('--disable-dev-shm-usage');
+
+// WebDriver setup
+const driver = new Builder()
+  .forBrowser('chrome')
+  .setChromeOptions(chromeOptions)
+  .build();
 
 Given('I am logged into Giftzy',  {timeout : 30 * 1000}, async function () {
       console.log('this:', this);
@@ -148,3 +156,4 @@ When('I delete the gift', async function () {
 Then('I should see the gift was deleted', async function () {
   await driver.quit();
 });
+
