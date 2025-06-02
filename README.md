@@ -6,16 +6,6 @@
 - **Database**: MongoDB
 - **Authentication**: JWT / Cookie-based sessions
 
-## 👨‍👩‍👧‍👦 Team Members
-
-| Name             | Student ID |
-| ---------------- | ---------- |
-| Tsz Hin Yee      | 223983938  |
-| Cynthia Wijaya   | 225138694  |
-| My Chi Nguyen    | 225255856  |
-| Nethmi Weeraman  | 224350062  |
-| Janaki Chaudhary | 224941505  |
-
 ## API Documentation
 /api/users
 - `GET` : Get all users
