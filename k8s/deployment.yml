@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: giftzy-deployment
+  labels:
+    app: giftzy
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: giftzy
+  template:
+    metadata:
+      labels:
+        app: giftzy
+    spec:
+      containers:
+      - name: giftzy
+        image: nwgiftzyacr.azurecr.io/giftzyjenkins:latest
+        ports:
+        - containerPort: 3000
+        env:
+        - name: MONGO_URI
+          valueFrom:
+            secretKeyRef:
+              name: giftzy-secrets
+              key: mongo-uri
+        - name: JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: giftzy-secrets
+              key: jwt-secret
+        - name: SESSION_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: giftzy-secrets
+              key: session-secret
+        - name: GOOGLE_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: giftzy-secrets
+              key: google-client-id
+        - name: GOOGLE_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: giftzy-secrets
+              key: google-client-secret
