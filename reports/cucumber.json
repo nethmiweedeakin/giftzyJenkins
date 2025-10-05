@@ -19,8 +19,8 @@
             },
             "result": {
               "status": "failed",
-              "duration": 8471713800,
-              "error_message": "SessionNotCreatedError: session not created: This version of ChromeDriver only supports Chrome version 137\nCurrent browser version is 140.0.7339.208 with binary path C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe\n    at Object.throwDecodedError (C:\\Users\\Nethmi\\OneDrive - Deakin University\\Projects  - Y01 S01\\giftzyJenkins\\node_modules\\selenium-webdriver\\lib\\error.js:523:15)\n    at parseHttpResponse (C:\\Users\\Nethmi\\OneDrive - Deakin University\\Projects  - Y01 S01\\giftzyJenkins\\node_modules\\selenium-webdriver\\lib\\http.js:524:13)\n    at Executor.execute (C:\\Users\\Nethmi\\OneDrive - Deakin University\\Projects  - Y01 S01\\giftzyJenkins\\node_modules\\selenium-webdriver\\lib\\http.js:456:28)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)"
+              "duration": 6706386500,
+              "error_message": "WebDriverError: unknown error: net::ERR_CONNECTION_REFUSED\n  (Session info: chrome=140.0.7339.208)\n    at Object.throwDecodedError (C:\\Users\\Nethmi\\OneDrive - Deakin University\\Projects  - Y01 S01\\giftzyJenkins\\node_modules\\selenium-webdriver\\lib\\error.js:523:15)\n    at parseHttpResponse (C:\\Users\\Nethmi\\OneDrive - Deakin University\\Projects  - Y01 S01\\giftzyJenkins\\node_modules\\selenium-webdriver\\lib\\http.js:524:13)\n    at Executor.execute (C:\\Users\\Nethmi\\OneDrive - Deakin University\\Projects  - Y01 S01\\giftzyJenkins\\node_modules\\selenium-webdriver\\lib\\http.js:456:28)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async thenableWebDriverProxy.execute (C:\\Users\\Nethmi\\OneDrive - Deakin University\\Projects  - Y01 S01\\giftzyJenkins\\node_modules\\selenium-webdriver\\lib\\webdriver.js:745:17)\n    at async World.<anonymous> (C:\\Users\\Nethmi\\OneDrive - Deakin University\\Projects  - Y01 S01\\giftzyJenkins\\features\\step_definitions\\giftzy.steps.js:26:5)"
             }
           },
           {

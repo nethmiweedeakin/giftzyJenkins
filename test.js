@@ -2,8 +2,14 @@ const { Builder, By, Key, until } = require('selenium-webdriver');
 const chrome = require('selenium-webdriver/chrome');
 const chromedriver = require('chromedriver'); 
 
+
+const service = new chrome.ServiceBuilder(chromedriver.path).build();
+chrome.setDefaultService(service);
+
+
+
 (async function giftzyTest() {
-  const driver = await new Builder().forBrowser('chrome').build();
+   const driver = await new Builder().forBrowser('chrome').build();
 
   try {
     await driver.get('http://localhost:3000/login');
