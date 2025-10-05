@@ -14,6 +14,8 @@ spec:
       labels:
         app: giftzy
     spec:
+      imagePullSecrets:
+      - name: acr-secret   
       containers:
       - name: giftzy
         image: nwgiftzyacr.azurecr.io/giftzyjenkins:latest
