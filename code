@@ -1,0 +1,47 @@
+stage('Azure Login & AKS Setup') {
+    steps {
+        echo '🔐 Logging into Azure...'
+        bat 'az login --service-principal -u %AZURE_APP_ID% -p %AZURE_PASSWORD% --tenant %AZURE_TENANT_ID%'
+        echo '📡 Setting AKS context...'
+        bat 'az aks get-credentials --resource-group %RESOURCE_GROUP% --name %AKS_CLUSTER% --overwrite-existing'
+        echo '🔗 Ensuring AKS can pull from ACR...'
+        bat 'az aks update --name %AKS_CLUSTER% --resource-group %RESOURCE_GROUP% --attach-acr %ACR_NAME%'
+    }
+}
+
+stage('Build & Push Docker Image') {
+    steps {
+        echo '🏗️ Building and pushing Docker image...'
+        bat """
+docker build -t %DOCKER_IMAGE% .
+docker push %DOCKER_IMAGE%
+"""
+    }
+}
+
+stage('Deploy to AKS') {
+    steps {
+        echo '🚀 Deploying Kubernetes manifests...'
+        dir('k8s') {
+            bat 'kubectl apply -f deployment.yml'
+            bat 'kubectl apply -f service.yml'
+            bat 'kubectl apply -f hpa.yml'
+        }
+    }
+}
+
+stage('Release') {
+    steps {
+        echo '🏷️ Tagging release...'
+        bat '''
+@echo off
+setlocal enabledelayedexpansion
+FOR /F "delims=" %%i IN ('git describe --tags --always') DO (
+  set GIT_TAG=%%i
+)
+git tag release-!GIT_TAG!
+git push origin release-!GIT_TAG!
+endlocal
+'''
+    }
+}
