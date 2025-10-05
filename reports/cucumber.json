@@ -1,0 +1,155 @@
+[
+  {
+    "description": "",
+    "elements": [
+      {
+        "description": "",
+        "id": "giftzy-end-to-end-user-journey;add,-view,-update,-and-delete-a-gift",
+        "keyword": "Scenario",
+        "line": 3,
+        "name": "Add, view, update, and delete a gift",
+        "steps": [
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 4,
+            "name": "I am logged into Giftzy",
+            "match": {
+              "location": "features\\step_definitions\\giftzy.steps.js:20"
+            },
+            "result": {
+              "status": "failed",
+              "duration": 8471713800,
+              "error_message": "SessionNotCreatedError: session not created: This version of ChromeDriver only supports Chrome version 137\nCurrent browser version is 140.0.7339.208 with binary path C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe\n    at Object.throwDecodedError (C:\\Users\\Nethmi\\OneDrive - Deakin University\\Projects  - Y01 S01\\giftzyJenkins\\node_modules\\selenium-webdriver\\lib\\error.js:523:15)\n    at parseHttpResponse (C:\\Users\\Nethmi\\OneDrive - Deakin University\\Projects  - Y01 S01\\giftzyJenkins\\node_modules\\selenium-webdriver\\lib\\http.js:524:13)\n    at Executor.execute (C:\\Users\\Nethmi\\OneDrive - Deakin University\\Projects  - Y01 S01\\giftzyJenkins\\node_modules\\selenium-webdriver\\lib\\http.js:456:28)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)"
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 5,
+            "name": "I add a new gift",
+            "match": {
+              "location": "features\\step_definitions\\giftzy.steps.js:47"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 6,
+            "name": "I view the newly added gift",
+            "match": {
+              "location": "features\\step_definitions\\giftzy.steps.js:63"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 7,
+            "name": "I add the gift to cart",
+            "match": {
+              "location": "features\\step_definitions\\giftzy.steps.js:69"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 8,
+            "name": "I navigate back to the gift from cart",
+            "match": {
+              "location": "features\\step_definitions\\giftzy.steps.js:75"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 9,
+            "name": "I edit the gift",
+            "match": {
+              "location": "features\\step_definitions\\giftzy.steps.js:87"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 10,
+            "name": "I send a chat message",
+            "match": {
+              "location": "features\\step_definitions\\giftzy.steps.js:113"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 11,
+            "name": "I verify the payment",
+            "match": {
+              "location": "features\\step_definitions\\giftzy.steps.js:133"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 12,
+            "name": "I delete the gift",
+            "match": {
+              "location": "features\\step_definitions\\giftzy.steps.js:139"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 13,
+            "name": "I should see the gift was deleted",
+            "match": {
+              "location": "features\\step_definitions\\giftzy.steps.js:156"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      }
+    ],
+    "id": "giftzy-end-to-end-user-journey",
+    "line": 1,
+    "keyword": "Feature",
+    "name": "Giftzy end-to-end user journey",
+    "tags": [],
+    "uri": "features\\giftzy.feature"
+  }
+]

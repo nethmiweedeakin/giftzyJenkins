@@ -1,5 +1,6 @@
 const { Builder, By, Key, until } = require('selenium-webdriver');
 const chrome = require('selenium-webdriver/chrome');
+const chromedriver = require('chromedriver'); 
 
 (async function giftzyTest() {
   const driver = await new Builder().forBrowser('chrome').build();
