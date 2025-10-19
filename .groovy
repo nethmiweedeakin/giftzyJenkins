@@ -10,23 +10,26 @@ pipeline {
     SESSION_SECRET      = credentials('SESSION_SECRET')
     GOOGLE_CLIENT_ID    = credentials('GOOGLE_CLIENT_ID')
     GOOGLE_CLIENT_SECRET= credentials('GOOGLE_CLIENT_SECRET')
+    
+        AZURE_APP_ID        = credentials('AZURE_APP_ID')
+        AZURE_PASSWORD      = credentials('AZURE_PASSWORD')
+        AZURE_TENANT_ID     = credentials('AZURE_TENANT_ID')
     }
     
-    options {
-  timeout(time: 30, unit: 'MINUTES') 
-}
-
 
     stages {
         stage('Checkout') {
             steps {
-                 git credentialsId: 'GITHUB_LOGIN', branch: 'main', url: 'https://github.com/nethmiweedeakin/giftzyJenkins.git'
+          git credentialsId: 'GITHUB_LOGIN', url: 'https://github.com/nethmiweedeakin/giftzyJenkins.git', branch: 'main', changelog: false, poll: false
             }
         }
         
-        stage('Build') {
+        
+         stage('Build') {
             steps {
 
+ echo '📦 Installing dependencies...'
+                bat 'npm install --include=dev'
 
 
                      // Kill any previously running Node.js processes
@@ -37,8 +40,8 @@ exit /b 0
             bat '''
 powershell -NoProfile -Command "$env:MONGO_URI='%MONGO_URI%'; $env:JWT_SECRET='%JWT_SECRET%'; $env:SESSION_SECRET='%SESSION_SECRET%'; $env:GOOGLE_CLIENT_ID='%GOOGLE_CLIENT_ID%'; $env:GOOGLE_CLIENT_SECRET='%GOOGLE_CLIENT_SECRET%'; Start-Process npm.cmd -ArgumentList 'run dev' -NoNewWindow; Start-Sleep -Seconds 10"
 '''
-
-bat 'npm install' 
+echo '🏗️ Building project...'
+               
 
         archiveArtifacts artifacts: '**/build/**', allowEmptyArchive: true
             }
@@ -180,7 +183,57 @@ ping 127.0.0.1 -n 6 >nul
         bat 'curl http://localhost:3000/health || echo "⚠️ Health check failed!"'
     }
 }
-    
+                stage('Azure Login & AKS Setup') {
+            steps {
+                echo '🔐 Logging into Azure...'
+                bat 'az logout'
+                bat 'az login --service-principal -u %AZURE_APP_ID% -p %AZURE_PASSWORD% --tenant %AZURE_TENANT_ID%'
+                echo '📡 Setting AKS context...'
+                bat 'az aks get-credentials --resource-group giftzy-resource --name giftzyaks --overwrite-existing'
+                bat 'az logout'
+             bat 'az login --use-device-code'
+                bat ' az role assignment create --assignee %AZURE_APP_ID% --role AcrPull --scope /subscriptions/8467a3ee-7e9c-4bc6-8309-cbc7a7c9c0d7/resourceGroups/giftzy-resource'
+                bat ' az aks update --name giftzyaks --resource-group giftzy-resource --attach-acr nwgiftzyacr'
+            }
+        }
+
+        stage('Build & Push Docker Image to ACR') {
+            steps {
+                echo '🏗️ Building and pushing Docker image to ACR...'
+                bat 'az acr login --name nwgiftzyacr'
+                bat """
+                docker build -t nwgiftzyacr.azurecr.io/giftzyjenkins:latest .
+                docker push nwgiftzyacr.azurecr.io/giftzyjenkins:latest
+                """
+            }
+        }
+
+        stage('Deploy to AKS') {
+            steps {
+                echo '🚀 Deploying Kubernetes manifests...'
+                dir('k8s') {
+                    bat 'kubectl apply -f deployment.yml'
+                    bat 'kubectl apply -f service.yml'
+                    bat 'kubectl apply -f hpa.yml'
+                }
+            }
+        }
+
+        stage('Release to Git with Tag') {
+            steps {
+                echo '🏷️ Tagging release...'
+                bat '''
+@echo off
+setlocal enabledelayedexpansion
+FOR /F "delims=" %%i IN ('git describe --tags --always') DO (
+  set GIT_TAG=%%i
+)
+git tag release-!GIT_TAG!
+git push origin release-!GIT_TAG!
+endlocal
+'''
+            }
+        }    
 }
     post {
         always {
